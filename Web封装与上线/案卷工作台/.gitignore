@@ -1,0 +1,5 @@
+runtime-data/
+output/
+.playwright-cli/
+.env*
+node_modules/

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>案卷工作台 · 交互组件实验</title>
+<style>
+  :root{color-scheme:light;--paper:#f6f4ef;--ink:#232621;--dim:#625D52;--line:#DEDBD0;--accent:#805638;--soft:#F0E8DC;--amber:#86501F;--warm:#F5E9D5;--card:#fff;--radius:6px;font:15px/1.55 "Microsoft YaHei","PingFang SC",system-ui,sans-serif}
+  *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink)} button,input{font:inherit} button{cursor:pointer} button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #805638;outline-offset:3px} [hidden]{display:none!important}
+  h1,h2,h3,p,blockquote,dl,dd{margin:0} h1{font-size:clamp(28px,4vw,46px);line-height:1.18;letter-spacing:.02em;font-family:"Noto Serif SC","Songti SC",SimSun,serif;font-weight:750} h2{font-size:23px;line-height:1.3} h3{font-size:16px} small,.sub{color:var(--dim);font-size:13px}
+  .shell{max-width:1310px;padding:0 40px 42px;margin:auto}.mast{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;border-bottom:1px solid var(--line)}.wordmark{display:flex;align-items:center;gap:12px;font-weight:750}.logo{width:33px;height:33px;display:grid;place-items:center;background:var(--ink);color:white;border-radius:3px;font-family:"Songti SC",SimSun,serif;font-size:20px}.mono{font:11px/1.35 ui-monospace,Consolas,monospace;letter-spacing:.13em;color:var(--dim)}.demo{font-size:12px;color:var(--dim);border:1px solid var(--line);padding:5px 9px;border-radius:20px}
+  .hero{display:grid;gap:10px;margin:25px 0 21px}.hero p{color:var(--dim)} .path{display:flex;gap:8px;align-items:center;color:var(--dim);flex-wrap:wrap;font-size:13px}
+  .workbench{display:grid;grid-template-columns:207px minmax(0,1fr);min-height:620px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+  .rail{background:#faf9f6;border-right:1px solid var(--line);padding:19px 12px}.railhead{padding:2px 9px 13px;color:var(--dim);font-size:12px;font-weight:650;letter-spacing:.1em}.tabs{display:grid;gap:6px}.tab{display:flex;align-items:center;text-align:left;gap:9px;min-height:46px;width:100%;padding:8px 10px;border:1px solid transparent;border-radius:3px;background:transparent;color:var(--ink);font-weight:650}.tab[aria-selected=true]{background:var(--soft);color:#644127;border-color:#E4D6C4;box-shadow:inset 2px 0 var(--accent)}.tabnum{font:12px ui-monospace,monospace;opacity:.8}
+  .registry{margin-top:23px;border-top:1px solid var(--line);padding:15px 9px 0}.registry ol{padding:0;margin:0;list-style:none;display:grid;gap:9px}.registry li{display:grid;grid-template-columns:33px 1fr;gap:4px;align-items:baseline;font-size:12px}.registry li span:first-child{font-family:ui-monospace,monospace;color:var(--accent)}.registry .future{color:var(--dim)}
+  main{min-width:0}.panel{display:grid;gap:18px;padding:24px 25px}.panelhead{display:grid;gap:5px}.panelhead .mono{color:var(--accent)}.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.frame{padding:15px 16px;border:1px solid var(--line);border-radius:5px;min-width:0}.framehead{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;margin-bottom:12px}.tag{display:inline-block;border-radius:3px;background:var(--soft);color:#66452F;padding:3px 8px;font-size:12px}.tag.pending{background:var(--warm);color:#74441D}.tag.neutral{background:#efefe9;color:#544E44}
+  .document{padding:16px;background:#fbfaf6;border:1px solid #e5ded0;border-radius:3px;box-shadow:0 3px 0 #eee9de}.doc-title{font-weight:750;margin-bottom:6px}.doc-meta{padding-bottom:9px;border-bottom:1px solid #e2dbcd}.docrow{display:grid;grid-template-columns:minmax(65px,.85fr) minmax(0,1fr);gap:8px;align-items:center;min-height:47px;border-bottom:1px solid #e2dbcd;font-size:13px}.docrow:last-child{border-bottom:0}.pick{justify-self:start;min-height:38px;background:var(--soft);color:#66452F;border:1px dashed var(--accent);border-radius:5px;padding:3px 9px;font-weight:750}.pick:hover{background:#E9DCCA}.hint{padding:8px 0 0;color:var(--dim);font-size:12px}
+  .editor{display:grid;gap:11px}.editor label{font-weight:650}.money{display:flex;align-items:center;gap:8px}.money input{width:min(100%,180px);min-width:0;padding:7px 10px;font-size:26px;font-variant-numeric:tabular-nums;font-weight:750;border:1px solid #B9AEA1;border-radius:7px;color:var(--ink);background:white}.money input[readonly]{background:#f3f4ef}.actionrow,.switch{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.btn,.chip{min-height:40px;padding:7px 13px;border:1px solid var(--line);border-radius:4px;color:var(--ink);background:var(--card);font-weight:650}.btn:hover,.chip:hover{border-color:#AB896C}.btn.primary{background:var(--accent);color:white;border-color:var(--accent)}.btn:disabled{opacity:.45;cursor:default}.chip[aria-pressed=true]{border-color:#C9AA8B;background:var(--soft);color:#66452F}.signal{padding:10px 12px;border-radius:3px;background:var(--soft);color:#60402B;font-size:13px}.signal.pending{background:var(--warm);color:#74441D}.signal strong{font-weight:750}
+  .compare-value{font-size:24px;font-weight:750;line-height:1.2;margin:3px 0 10px}.compare-value.long{font-size:17px}.factors{display:grid;gap:0}.factors>div{display:grid;grid-template-columns:70px 1fr;gap:6px;border-top:1px solid var(--line);padding:7px 0;font-size:13px}.factors dt{color:var(--dim)}.factors dd{overflow-wrap:anywhere}.factor-focus{color:var(--amber);font-weight:750}.original{margin-top:12px;font-size:13px}.original summary{color:var(--accent);cursor:pointer;font-weight:650}.original blockquote{padding:7px 0 0 10px;border-left:2px solid #D0B8A0;margin-top:8px}
+  .ledger{border:1px solid var(--line);border-radius:5px;overflow:hidden}.ledgerhead,.ledgerrow{display:grid;grid-template-columns:minmax(106px,.68fr) minmax(0,1.35fr) minmax(0,1.35fr);gap:12px;padding:10px 13px}.ledgerhead{background:#f2f1eb;color:var(--dim);font-size:12px;font-weight:650}.ledgerrow+.ledgerrow{border-top:1px solid var(--line)}.ledgerrow strong{font-size:13px}.ledgerrow span{font-size:13px;overflow-wrap:anywhere}.ledgerrow .after{font-weight:650;color:var(--accent)}.change{background:#F7F0E6}.timeline{display:flex;gap:0;align-items:stretch;margin:0;padding:0;list-style:none}.timeline li{flex:1;padding:8px 10px 0 0;border-top:3px solid #D7C9B7;font-size:13px;min-width:0}.timeline li span{display:block;color:var(--dim);font-size:12px}.timeline li.new{border-top-color:var(--accent)}.next{border-top:1px solid var(--line);padding-top:13px;display:grid;gap:4px}.next p{font-size:13px;color:var(--dim)}.flowmark{font-size:12px;color:var(--dim);padding:8px 0 0}.status{min-height:20px;color:#644127;font-size:13px}
+  .arrive{animation:arrive .24s ease-out both}@keyframes arrive{from{transform:translateY(6px);opacity:.45}to{transform:translateY(0);opacity:1}}@media(prefers-reduced-motion:reduce){.arrive{animation:none}}
+  @media(max-width:860px){.shell{padding:0 19px 28px}.workbench{grid-template-columns:160px minmax(0,1fr)}.panel{padding:19px 16px}}
+  @media(max-width:660px){.workbench{display:block;min-height:0}.rail{border:0;border-bottom:1px solid var(--line);padding:8px}.tabs{grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}.tab{justify-content:center;font-size:12px;padding:5px;gap:4px}.railhead,.registry{display:none}.cols{grid-template-columns:1fr}.ledgerhead,.ledgerrow{grid-template-columns:minmax(57px,.65fr) minmax(0,1fr) minmax(0,1fr);gap:5px;padding:8px}.ledgerrow span{font-size:12px}.timeline li{padding-right:7px}.mast{padding:11px 0}.hero{margin:17px 0}.shell{padding-inline:11px}}
+</style>
+<div class="shell">
+  <header class="mast"><div class="wordmark"><span class="logo" aria-hidden="true">卷</span><div>案卷工作台<div class="mono">EVIDENCE DESK</div></div></div><span class="demo">虚构案件 · 交互原型</span></header>
+  <section class="hero"><div class="path"><span>案件工作区</span><span aria-hidden="true">/</span><span>劳动争议</span><span aria-hidden="true">/</span><span>交互组件</span></div><h1>陈某 · 星桥公司</h1><p>从原件校对，到事实因子核对，再到补料后的准备事项。</p></section>
+  <div class="workbench">
+    <aside class="rail"><div class="railhead">组件实验</div><div class="tabs" role="tablist" aria-label="三个交互组件">
+      <button class="tab" type="button" id="tab-lens" role="tab" aria-controls="lens" aria-selected="true"><span class="tabnum">01</span>证据镜片</button>
+      <button class="tab" type="button" id="tab-compare" role="tab" aria-controls="compare" aria-selected="false" tabindex="-1"><span class="tabnum">02</span>因子对照</button>
+      <button class="tab" type="button" id="tab-impact" role="tab" aria-controls="impact" aria-selected="false" tabindex="-1"><span class="tabnum">03</span>补料轨迹</button>
+    </div><section class="registry"><div class="railhead">演示材料索引</div><ol><li><span>M01</span>陈某接案笔录</li><li><span>M02</span>9 月工资表</li><li><span>M03</span>付款凭证</li><li><span>M04</span>公司答辩</li><li class="future"><span>M05</span><span id="registry-notice">书面通知 · 待补入</span></li></ol></section></aside>
+    <main>
+      <section id="lens" class="panel" role="tabpanel" aria-labelledby="tab-lens">
+        <div class="panelhead"><span class="mono">01 / SOURCE LENS</span><h2>点原件，定位校对处</h2><p class="sub">把原件里的数字带进编辑框，保存成独立版本。</p></div>
+        <div class="cols">
+          <section class="frame"><div class="framehead"><h3>M02 · 原件示意</h3><span class="tag neutral">原件</span></div>
+            <div class="document"><p class="doc-title">星桥公司 · 工资清册</p><p class="doc-meta sub">2026 年 9 月 · 陈某 E017</p>
+              <div class="docrow"><span>应发工资</span><button class="pick" type="button" id="pick-amount" aria-label="将原件上的 6000 元带入校对框">6,000.00</button></div>
+              <div class="docrow"><span>应付净额</span><span>5,400.00</span></div>
+            </div><p class="hint">点击虚线框里的 6,000.00。</p>
+          </section>
+          <section class="frame editor"><div class="framehead"><h3>文字校对</h3><span class="tag pending" id="version-tag">v1 · OCR</span></div>
+            <label for="amount">应发工资</label><div class="money"><input id="amount" type="text" inputmode="decimal" value="8000" maxlength="10"><span>元</span></div>
+            <div class="actionrow"><button class="btn primary" id="save-version" type="button" disabled>保存为 v2</button><button class="btn" id="old-citation" type="button">回看 v1 引用</button><button class="btn" id="current-version" type="button" hidden>返回 v2</button></div>
+            <p class="status" id="lens-status" aria-live="polite">OCR 文本中的 8,000 元需要核对。</p>
+          </section>
+        </div>
+        <div class="signal"><strong>固定引用</strong>　旧引用 R12 指向 M02 的 v1。校对后新底稿可引用 v2，原引用仍能回到当时的文字。</div>
+      </section>
+      <section id="compare" class="panel" role="tabpanel" aria-labelledby="tab-compare" hidden>
+        <div class="panelhead"><span class="mono">02 / FACT COMPARATOR</span><h2>先对齐范围，再判断差异</h2><p class="sub">换一组记录，看看主体、期间和口径如何改变核对结果。</p></div>
+        <div class="switch" aria-label="选择事实因子对照" role="group"><button class="chip" data-pair="pay" aria-pressed="true" type="button">应发 vs 实付</button><button class="chip" data-pair="notice" aria-pressed="false" type="button">同一谈话的相反记载</button></div>
+        <div id="pair-view" class="cols" aria-live="polite"></div><div id="pair-note" class="signal" aria-live="polite"></div>
+      </section>
+      <section id="impact" class="panel" role="tabpanel" aria-labelledby="tab-impact" hidden>
+        <div class="panelhead"><span class="mono">03 / EVIDENCE IMPACT</span><h2>补一份材料，看到它改变了什么</h2><p class="sub">把新增证据连接到受影响的事实因子与待办。</p></div>
+        <div class="actionrow"><button class="btn primary" type="button" id="add-notice">补入 M05 书面通知</button><button class="btn" type="button" id="back-before" hidden>回看补料前</button><span class="tag pending" id="impact-tag">生效日待核</span></div>
+        <ol class="timeline" aria-label="通知相关时间点"><li>10 月 8 日<span>M01 · 口头告知陈述</span></li><li class="new" data-new hidden>10 月 10 日<span>M05 · 文件出具</span></li><li class="new" data-new hidden>10 月 13 日<span>M05 · 文件载明生效</span></li></ol>
+        <div class="ledger" aria-label="补料前后对照"><div class="ledgerhead"><span>核对项</span><span>补料前</span><span>补料后</span></div>
+          <div class="ledgerrow" id="date-change"><strong>生效日期</strong><span>已读材料未明确</span><span class="after" id="date-after">等待补入材料</span></div>
+          <div class="ledgerrow"><strong>原口头陈述</strong><span>M01 · 保留</span><span id="oral-after">等待补入材料</span></div>
+          <div class="ledgerrow"><strong>送达与效力</strong><span>待承办人核对</span><span id="service-after">等待补入材料</span></div>
+        </div>
+        <details class="original" id="notice-source" hidden><summary>展开 M05 原文</summary><blockquote>2026 年 10 月 10 日出具。致陈某：本公司决定自 2026 年 10 月 13 日起解除与你的劳动合同。</blockquote></details>
+        <div class="next" aria-live="polite"><h3>下一步</h3><p id="next-task">查找是否有明确载明解除生效时间的文件。</p></div>
+      </section>
+    </main>
+  </div>
+  <p class="flowmark">组件原型 · 文字版本、原文引用和专业状态在演示中独立变化。</p>
+</div>
+<script>
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  function tabAt(index, focus = false) {
+    tabs.forEach((tab, i) => {
+      tab.setAttribute('aria-selected', String(i === index));
+      tab.tabIndex = i === index ? 0 : -1;
+      const panel = $(tab.getAttribute('aria-controls'));
+      panel.hidden = i !== index;
+      panel.classList.remove('arrive');
+      if (i === index) { void panel.offsetWidth; panel.classList.add('arrive'); }
+    });
+    if (focus) tabs[index].focus();
+  }
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => tabAt(index));
+    tab.addEventListener('keydown', event => {
+      const next = event.key === 'ArrowRight' ? (index + 1) % tabs.length :
+        event.key === 'ArrowLeft' ? (index + tabs.length - 1) % tabs.length :
+        event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : null;
+      if (next !== null) { event.preventDefault(); tabAt(next, true); }
+    });
+  });
+  let saved = false;
+  let draftValue = '8000';
+  let activePair = 'pay';
+  const matchesSample = value => /^6[,，]?000(?:\.00)?$/u.test(value.trim());
+  function showVersion(mode) {
+    const readonly = mode === 'history' || saved;
+    $('amount').readOnly = readonly;
+    $('amount').value = mode === 'history' ? '8000' : saved ? '6000' : draftValue;
+    $('version-tag').textContent = mode === 'history' ? 'v1 · 固定引用' : saved ? 'v2 · 已校对' : 'v1 · OCR';
+    $('version-tag').classList.toggle('pending', !saved && mode !== 'history');
+    $('save-version').disabled = readonly || !matchesSample(draftValue);
+    $('current-version').hidden = mode !== 'history';
+    $('current-version').textContent = saved ? '返回 v2' : '返回校对';
+    $('lens-status').textContent = mode === 'history' ? 'R12 在 v1 中引用「应发工资 8000 元」。' :
+      saved ? 'v2 已保存，应发 6000 元。v1 及其引用仍可查看。' :
+      matchesSample(draftValue) ? '校对草稿为 6,000 元，等待保存。' : '请对照左侧原件核对。';
+  }
+  $('pick-amount').addEventListener('click', () => {
+    if (!saved) {
+      draftValue = '6000';
+      showVersion('current');
+      $('lens-status').textContent = '已从原件带入 6,000 元，等待保存。';
+    } else showVersion('current');
+    $('amount').focus();
+  });
+  $('amount').addEventListener('input', () => {
+    draftValue = $('amount').value;
+    const valid = matchesSample(draftValue);
+    $('save-version').disabled = !valid || saved;
+    $('lens-status').textContent = valid ? '与演示原件一致，可以保存 v2。' : '对照左侧原件中的数字。';
+  });
+  $('save-version').addEventListener('click', () => {
+    if (!matchesSample(draftValue)) return;
+    saved = true;
+    showVersion('current');
+    if (activePair === 'pay') showPair('pay');
+  });
+  $('old-citation').addEventListener('click', () => showVersion('history'));
+  $('current-version').addEventListener('click', () => showVersion('current'));
+
+  const pairs = {
+    pay: {
+      cards: [
+        ['M02 · 工资表原件', '6,000 元', ['陈某 E017', '2026 年 9 月', '应发工资'], '陈某（E017）2026 年 9 月应发工资 6000 元，应付净额 5400 元。'],
+        ['M03 · 付款回单', '5,400 元', ['陈某 E017', '2026 年 9 月', '实际付款'], '星桥公司向陈某账户实际支付 2026 年 9 月工资 5400 元。'],
+      ],
+      labels: ['主体','工资月','金额口径'], focus: 2,
+      message: '<strong>口径不同 · 分列保留</strong>　这两条金额各有出处。后续核对扣项和到账，保留应发与实付的区别。',
+    },
+    notice: {
+      cards: [
+        ['M01 · 陈某接案笔录', '陈某称曾收到口头通知', ['陈某 E017', '10 月 8 日 · MT17', '肯定'], '陈某称：编号 MT17 的谈话中，主管代表公司口头告知解除劳动合同。'],
+        ['M04 · 公司答辩', '公司否认发过该通知', ['陈某 E017', '10 月 8 日 · MT17', '否定'], '公司称：就编号 MT17 的谈话，主管没有代表公司向陈某发出解除通知。'],
+      ],
+      labels: ['对象','同一谈话','陈述方向'], focus: 2,
+      message: '<strong>同一事项 · 相反记载待核</strong>　展开两侧出处供承办人复查，双方说法同时保留。',
+    },
+  };
+  function showPair(key) {
+    activePair = key;
+    const pair = pairs[key];
+    $('pair-view').innerHTML = pair.cards.map(([source, value, facts, quote], i) => '<section class="frame arrive"><div class="framehead"><h3>' + (key === 'pay' && i === 0 && saved ? 'M02 · 工资表 v2' : source) + '</h3></div><div class="compare-value' + (key === 'notice' ? ' long' : '') + '">' + value + '</div><dl class="factors">' +
+      facts.map((fact, i) => '<div><dt>' + pair.labels[i] + '</dt><dd' + (i === pair.focus ? ' class="factor-focus"' : '') + '>' + fact + '</dd></div>').join('') + '</dl><details class="original"><summary>查看引用原文</summary><blockquote>' + quote + '</blockquote></details></section>').join('');
+    $('pair-note').innerHTML = pair.message;
+    $('pair-note').classList.toggle('pending', key === 'notice');
+    document.querySelectorAll('[data-pair]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.pair === key)));
+  }
+  document.querySelectorAll('[data-pair]').forEach(button => button.addEventListener('click', () => showPair(button.dataset.pair)));
+  showPair('pay');
+  function showImpact(added) {
+    $('add-notice').hidden = added; $('back-before').hidden = !added;
+    $('impact-tag').textContent = added ? '已记录 · 送达待核' : '生效日待核';
+    $('date-after').textContent = added ? 'M05 载明 10 月 13 日' : '等待补入材料';
+    $('oral-after').textContent = added ? 'M01 原陈述继续保留' : '等待补入材料';
+    $('service-after').textContent = added ? '仍待承办人核对' : '等待补入材料';
+    $('date-change').classList.toggle('change', added);
+    $('registry-notice').textContent = added ? '书面通知 · 已补入' : '书面通知 · 待补入';
+    $('next-task').textContent = added ? '核对通知送达的时间、方式及效力。生效日期已有文件出处。' : '查找是否有明确载明解除生效时间的文件。';
+    $('notice-source').hidden = !added;
+    document.querySelectorAll('[data-new]').forEach(node => { node.hidden = !added; node.classList.toggle('arrive', added); });
+    (added ? $('back-before') : $('add-notice')).focus();
+  }
+  $('add-notice').addEventListener('click', () => showImpact(true));
+  $('back-before').addEventListener('click', () => showImpact(false));
+</script>
+</html>

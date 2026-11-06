@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="面向承办人的劳动争议案卷工作台，支持核对材料、整理接案底稿和审查关键节点。">
+  <meta name="theme-color" content="#242e28">
+  <title>案卷工作台</title>
+  <link rel="icon" href="/assets/folio.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+  <script type="module" src="/paper-link.js"></script>
+</head>
+<body>
+  <svg class="symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="icon-folio" viewBox="0 0 32 32">
+      <path fill="currentColor" d="M3 4h7v24H3zm9 0h7v24h-7zm9 .8 6.5-1.1 4.1 23.6-6.5 1.2z"/>
+      <path fill="none" stroke="#fff5e8" stroke-width="1.25" d="M4.5 10h4m-4 13h4m5-13h4m-4 13h4m5.7-13.2 3.8-.7m-1.6 13.7 3.8-.7"/>
+    </symbol>
+    <symbol id="icon-history" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3.5 12a8.5 8.5 0 1 1 2.2 5.7M3.5 6.5v5.8h5.8M12 7.7v5l3.1 2"/>
+    </symbol>
+    <symbol id="icon-export" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M12 3.8v11.5m-4-4.2 4 4.2 4-4.2M4.8 15.8v4.4h14.4v-4.4"/>
+    </symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 5v14M5 12h14"/>
+    </symbol>
+    <symbol id="icon-bookmark" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M6 4.5h12v15l-6-4-6 4z"/>
+    </symbol>
+  </svg>
+  <a class="skip" href="#folio">跳到当前案卷</a>
+  <header class="masthead">
+    <div class="wordmark"><svg class="icon" aria-hidden="true"><use href="#icon-folio"/></svg><span>案卷工作台</span></div>
+    <p class="breadcrumb"><span id="case-meta">劳动争议</span><span aria-hidden="true">　/　</span><span id="case-title">案件工作区</span></p>
+    <div class="header-actions">
+      <button class="button" type="button" data-action="case-history" disabled><svg class="icon" aria-hidden="true"><use href="#icon-history"/></svg>版本记录</button>
+      <button class="button" type="button" data-action="export" disabled><svg class="icon" aria-hidden="true"><use href="#icon-export"/></svg>导出底稿</button>
+    </div>
+  </header>
+  <p id="notice" class="global-status status-line" role="status" aria-live="polite"></p>
+  <p id="public-demo-notice" class="global-status status-line" hidden>公开演示 · 请只使用虚构材料。案卷按浏览器隔离，上传和 DeepSeek 核对受演示额度限制。</p>
+  <div class="workbench">
+    <svg class="annotation-leader" aria-hidden="true" hidden><path/></svg>
+    <aside class="rail" aria-label="案件和材料目录">
+      <section class="rail-section">
+        <div class="rail-top">
+          <h2 class="rail-heading">案件</h2>
+          <button class="button compact" type="button" data-action="new-case"><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg>建案</button>
+        </div>
+        <p class="rail-label" id="case-list-label">打开案件</p>
+        <ul id="case-list" class="case-list" aria-labelledby="case-list-label"><li class="hint">正在读取案件</li></ul>
+      </section>
+      <section class="rail-section">
+        <div class="rail-section-title">
+          <h2>材料目录</h2>
+          <button class="button compact" type="button" data-action="add-material" aria-label="新增材料" disabled><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg>补料</button>
+        </div>
+        <ul id="material-list" class="material-list" aria-label="案件材料"></ul>
+      </section>
+      <div class="rail-foot"><button class="button" type="button" data-action="edit-case" disabled><svg class="icon" aria-hidden="true"><use href="#icon-bookmark"/></svg>案件进度</button></div>
+    </aside>
+    <main id="folio" class="desk" tabindex="-1">
+      <article class="folio">
+        <header class="folio-head">
+          <p class="folio-kicker">劳动争议　/　案件工作区</p>
+          <h1>案卷工作台</h1>
+        </header>
+        <div class="folio-empty"><h2>打开一宗案件</h2><p>可从左侧打开已保存的案件，或创建新案件，登记文字、图片和原始附件。</p></div>
+        <footer class="folio-foot"><span>案件卷宗</span><span>01</span></footer>
+      </article>
+    </main>
+    <div class="annotations">
+      <aside id="annotations" class="annotation-panel" aria-label="当前工作区">
+        <h2 class="annotation-heading">核对批注</h2>
+        <p class="hint">打开案件并选中材料后，可以在此核对原件与文字版本。</p>
+      </aside>
+      <nav class="stage-tabs" id="workspace-tabs" aria-label="办案阶段">
+        <button type="button" data-view="materials" aria-pressed="true">材料核对</button>
+        <button type="button" data-view="nodes" aria-pressed="false">关键节点</button>
+        <button type="button" data-view="draft" aria-pressed="false">接案底稿</button>
+      </nav>
+    </div>
+  </div>
+  <dialog id="workspace-dialog" aria-labelledby="dialog-title"><div id="dialog-content"></div></dialog>
+  <noscript><p class="global-status">请启用浏览器 JavaScript 后打开工作台。</p></noscript>
+</body>
+</html>

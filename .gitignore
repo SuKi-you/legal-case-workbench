@@ -1,0 +1,15 @@
+node_modules/
+dist/
+output/
+runtime-data/
+.vercel/
+.playwright-cli/
+coverage/
+.env*
+!.env.example
+accounts.json
+*.pem
+*.key
+*.tgz
+*.tar.gz
+*.zip

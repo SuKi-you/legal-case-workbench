@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "法律 Agent（优化版 · 劳动法）",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "--env-file-if-exists=${workspaceFolder}/.env.local"
+      ],
+      "program": "${workspaceFolder}/examples/agent.ts",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "args": [
+        "--plugin",
+        "../劳动法插件/src/index.ts"
+      ]
+    }
+  ]
+}

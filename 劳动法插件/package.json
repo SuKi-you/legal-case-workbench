@@ -1,0 +1,14 @@
+{
+  "name": "@law-agent/labor-law-plugin",
+  "version": "0.6.0",
+  "private": true,
+  "description": "劳动法部门法插件：声明式知识包 + 纯函数判定，适配法律 agent 底座",
+  "type": "module",
+  "engines": {
+    "node": ">=24.12.0"
+  },
+  "scripts": {
+    "typecheck": "node ../底座/node_modules/typescript/bin/tsc --noEmit -p tsconfig.json",
+    "test": "node --test tests/*.test.ts"
+  }
+}

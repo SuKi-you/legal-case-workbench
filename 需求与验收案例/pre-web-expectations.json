@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "rules": {
+    "scope": "技术验收使用虚构材料。冻结预期仅由验收程序读取。",
+    "knownStatement": "明确的口头通知须保留原文。核对真实性和效力仍可作为人工事项，已读且已有的方式不能又标成缺项或要求重述。",
+    "dates": "出具日、签收日、口头谈话日和最后实际工作日分别归属于对应事件。只有明示的生效日可进入解除时间要件。",
+    "wages": "相同月份的应发、应付净额和实际支付属于不同口径。数字不同不能单独产生实质冲突。",
+    "opponent": "指向同一人同一事件的肯定、否定应并列。另一个人和另一事件不能造成同一命题的冲突。",
+    "versioning": "接案底稿固定原版文字，后续底稿选修订版。源引用均可按材料、版本、区间、摘录及SHA256独立验证。",
+    "workflow": "接案、答辩、新证据、庭前准备使用同案。后三节点有前后关联、范围或状态变化及待办。庭前清单可引用复用的当前整理运行。",
+    "coverage": "未完成核对的来源仍记未读或待人工，不能作为已读无记载。底稿生成、覆盖完整与专业结论分别报告。",
+    "restoration": "回滚到接案保存点后，后续节点底稿退出当前视图，旧材料和已提交的历史字节保留。撤销后恢复后续节点底稿并可独立进程读回。"
+  },
+  "cases": {
+    "primary": {
+      "employee": "陈某",
+      "oralAnchor": "MT17",
+      "oralDate": "2026-10-08",
+      "effectiveDate": "2026-10-13",
+      "notEffectiveDates": ["2026-10-08", "2026-10-10", "2026-10-11"],
+      "revisionReplaces": ["500元", "600元"],
+      "opponentSameEvent": true,
+      "gross": "6000",
+      "actual": "5400"
+    },
+    "rephrased": {
+      "employee": "许某",
+      "oralAnchor": "Q42",
+      "oralDate": "2026-08-03",
+      "effectiveDate": "2026-08-12",
+      "notEffectiveDates": ["2026-08-03", "2026-08-06", "2026-08-07"],
+      "revisionReplaces": ["200元", "280元"],
+      "opponentSameEvent": true,
+      "gross": "7000",
+      "actual": "6720"
+    },
+    "other_scope": {
+      "employee": "邵某",
+      "oralAnchor": "B71",
+      "oralDate": "2026-06-04",
+      "effectiveDate": null,
+      "notEffectiveDates": ["2026-06-04", "2026-06-09", "2026-06-11"],
+      "revisionReplaces": ["300元", "400元"],
+      "opponentSameEvent": false,
+      "gross": "5200",
+      "actual": "4800"
+    }
+  }
+}

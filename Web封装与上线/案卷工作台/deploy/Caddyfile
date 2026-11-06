@@ -1,0 +1,15 @@
+{
+	default_sni {$LAW_WEB_DOMAIN}
+}
+
+{$LAW_WEB_DOMAIN} {
+	tls {
+		issuer acme https://acme-v02.api.letsencrypt.org/directory {
+			profile shortlived
+			disable_tlsalpn_challenge
+		}
+	}
+	encode zstd gzip
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy 127.0.0.1:8787
+}

@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "frozenAt": "2026-11-05T08:44:22.3863638Z",
+  "algorithm": "SHA256 raw file bytes",
+  "files": {
+    "pre-web-fixtures.json": "0df6abf8f2186a9da0dc4ba64b1f705968b57d927023ee83210b483e6cdc8613",
+    "pre-web-expectations.json": "a1fdfaf42e1978bb277508376dc7055fc1a34be288e35719da182b59e3ed6880"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "案卷工作台 · 交互原型导入",
+  "id": "1693546038926740852",
+  "api": "1.0.0",
+  "editorType": ["figma"],
+  "main": "code.js",
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
+}

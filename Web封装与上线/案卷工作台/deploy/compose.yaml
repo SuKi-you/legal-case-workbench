@@ -1,0 +1,77 @@
+name: law-workbench
+
+services:
+  workbench:
+    build:
+      context: ../../..
+      dockerfile: Web封装与上线/案卷工作台/deploy/Dockerfile
+    init: true
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      LAW_WEB_PORT: "8787"
+      LAW_WEB_PUBLIC_ORIGIN: https://${LAW_WEB_DOMAIN:?Set LAW_WEB_DOMAIN}
+      LAW_WEB_ACCOUNTS_FILE: /run/workbench-config/accounts.json
+      LAW_WEB_DATA_DIR: /var/lib/law-workbench
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,noexec,mode=1777
+    volumes:
+      - type: bind
+        source: ${LAW_WEB_CONFIG_DIR:?Set LAW_WEB_CONFIG_DIR}
+        target: /run/workbench-config
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${LAW_WEB_DATA_HOST_DIR:?Set LAW_WEB_DATA_HOST_DIR}
+        target: /var/lib/law-workbench
+        bind:
+          create_host_path: false
+    ports:
+      - "80:80"
+      - "443:443"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - |
+          const http = require('node:http');
+          const host = new URL(process.env.LAW_WEB_PUBLIC_ORIGIN).host;
+          http.get('http://127.0.0.1:8787/', {headers:{host,'x-forwarded-proto':'https'}}, response => {
+            response.resume();
+            process.exitCode = response.statusCode === 401 ? 0 : 1;
+          }).on('error', () => {process.exitCode = 1;});
+      interval: 10s
+      timeout: 4s
+      retries: 5
+
+  caddy:
+    image: caddy:2.11-alpine
+    network_mode: service:workbench
+    depends_on:
+      workbench:
+        condition: service_healthy
+        restart: true
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      LAW_WEB_DOMAIN: ${LAW_WEB_DOMAIN:?Set LAW_WEB_DOMAIN}
+    volumes:
+      - type: bind
+        source: ./Caddyfile
+        target: /etc/caddy/Caddyfile
+        read_only: true
+        bind:
+          create_host_path: false
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  caddy-data:
+  caddy-config:

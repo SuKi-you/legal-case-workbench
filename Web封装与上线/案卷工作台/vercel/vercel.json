@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "fluid": true,
+  "public": false,
+  "regions": ["hkg1"],
+  "buildCommand": "node -e \"const fs=require('node:fs'); fs.mkdirSync('static',{recursive:true}); fs.writeFileSync('static/robots.txt','User-agent: *\\nDisallow: /\\n')\"",
+  "outputDirectory": "static",
+  "functions": {
+    "api/workbench.mjs": {
+      "maxDuration": 300,
+      "includeFiles": "{底座/**,劳动法插件/**,Web封装与上线/案卷工作台/public/**,Web封装与上线/案卷工作台/server/**,Web封装与上线/案卷工作台/vercel/**}"
+    }
+  },
+  "rewrites": [
+    { "source": "/", "destination": "/api/workbench?__workbench_path=/" },
+    { "source": "/:path*", "destination": "/api/workbench?__workbench_path=/:path*" }
+  ]
+}
